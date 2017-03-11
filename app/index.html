@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>p2p connection</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/peerToPeer.js"></script>
+    <script src="js/connector.js"></script>
+    <style>
+        #otherVideo {
+            width: 600px;
+        }
+
+        #myVideo {
+            width: 200px;
+        }
+
+        video {
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+<video id="myVideo"></video>
+<video id="otherVideo"></video>
+
+<div>
+    <input type="text" id="roomId" value="xa012"/>
+    <button id="join">Join</button>
+    <button id="call" disabled="true">Call</button>
+</div>
+
+<script>
+    document.getElementById("join").addEventListener("click", function (ev) {
+        //connect to server and add to room on Join button
+        var roomId = document.getElementById("roomId").value;
+//            var connector = new Connector("https://192.168.0.103:3000"); //use for remote testing (need https server!)
+        var connector = new Connector("http://127.0.0.1:3000"); //use for local testing on one machine
+        connector.connect(roomId, function (err) {
+            if (err) {
+                return console.error(err);
+            }
+
+            window.connector = connector;
+            document.getElementById("join").remove();
+
+            var ownMediaTag = document.getElementById("myVideo");
+            ownMediaTag.muted = true;
+            var remoteMediaTag = document.getElementById("otherVideo");
+
+            //create p2p handler and setup it
+            _p2p = new p2p(window.connector, ownMediaTag, remoteMediaTag);
+            _p2p.catchStream(function () {
+                document.getElementById("call").disabled = false;
+            })
+        });
+    }, false);
+
+    document.getElementById("call").addEventListener("click", function (ev) {
+        //make a call
+        _p2p.call();
+    }, false);
+</script>
+</body>
+</html>
