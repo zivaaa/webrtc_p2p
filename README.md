@@ -38,20 +38,20 @@
 ``` stream (local video) => peerConnection => iceCandidate | receive offer | generate answer | onaddstream (remote video) ```
 
 
- ## p.s
+## P.S.
 
  - после запуска перейти на [http://127.0.0.1:3000](http://127.0.0.1:3000) в двух вкладках и нажать join. После чего в одной из них нажать call;
  - изначально настроено под локальное через локалхост, но webrtc позволяет получать доступ к камере только через https или localhost.
  Поэтому чтобы запустить удаленно, надо включить https, а также иметь сгенерированные сертификаты;
 
 
- ```
- //index.js
- //...
- //var http = require('http').createServer(app); //use with localhost
- var http = require('https').createServer(credentials, app);
- //...
- ```
+```
+//index.js
+//...
+//var http = require('http').createServer(app); //use with localhost
+var http = require('https').createServer(credentials, app);
+//...
+```
 
 ```
 //app/index.html (change to your ip)
