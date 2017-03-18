@@ -82,7 +82,7 @@ var connector = new Connector("https://192.168.0.103:3000"); //use for remote te
 
  Работу p2p можно проверить на странице [http://127.0.0.1:3000/p2p_filter.html](http://127.0.0.1:3000/p2p_filter.html). Ну или же включить IP сервера на страницах и https в index.js.
 
-
+![screenshot_p2p](https://github.com/zivaaa/webrtc_p2p/blob/master/images/stream_filter_01.png)
 
 
 
