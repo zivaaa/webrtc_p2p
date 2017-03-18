@@ -12,7 +12,7 @@
  Это просто express с socket.io через которые браузеры соединяются, обмениваются сообщениями, кандидатами и офферами.
 
 
-## Client
+## Client p2p
 
 - app/js/connector.js
 
@@ -27,7 +27,7 @@
 ```call() ``` - предупреждает второго собеседника о том, что будет звонить. После чего, собственно, и звонит.
 
 
-### Client logic
+### Client p2p logic
 
 **caller**
 
@@ -49,7 +49,7 @@
 //index.js
 //...
 //var http = require('http').createServer(app); //use with localhost
-var http = require('https').createServer(credentials, app);
+  var http = require('https').createServer(credentials, app);
 //...
 ```
 
@@ -61,3 +61,29 @@ var connector = new Connector("https://192.168.0.103:3000"); //use for remote te
 
 //...
 ```
+
+
+# Video stream filter
+
+ На видео поток можно накладывать фильтр и передавать по сети отфильтрованное видео. Для этого можно использовать [http://www.pixijs.com/](pixi js).
+
+  - Для этого надо получить поток с камеры;
+  - Создать pixi Application;
+  - Создать спрайт видео текстурой, указав видео с оригинальным потоком как источник;
+  - Получить поток из созданного Pixi канваса и передавать уже его;
+
+ При этом надо не забывать, что обработка видео будет происходить посредством WebGL.
+
+ ## Single page filter
+
+ После запуска сервера перейти на [http://127.0.0.1:3000/filter.html](http://127.0.0.1:3000/filter.html).
+
+ ## p2p Filter
+
+ Работу p2p можно проверить на странице [http://127.0.0.1:3000/p2p_filter.html](http://127.0.0.1:3000/p2p_filter.html). Ну или же включить IP сервера на страницах и https в index.js.
+
+
+
+
+
+
