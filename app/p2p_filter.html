@@ -6,6 +6,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/peerToPeer.js"></script>
     <script src="js/connector.js"></script>
+    <script src="js/pixi.min.js"></script>
+    <script src="js/filter.js"></script>
     <style>
         #otherVideo {
             width: 600px;
@@ -18,23 +20,37 @@
         video {
             vertical-align: top;
         }
+
+        canvas {
+            width: 300px;
+            height: 200px;
+        }
     </style>
 </head>
 <body>
-<video id="myVideo"></video>
-<video id="otherVideo"></video>
+<div id="videos">
+    <video id="otherVideo"></video>
+</div>
+
 
 <div>
     <input type="text" id="roomId" value="xa012"/>
     <button id="join">Join</button>
     <button id="call" disabled="true">Call</button>
+    <select id="filterSelect">
+        <option>normal</option>
+        <option>blur</option>
+        <option>color</option>
+        <option>noise</option>
+        <option>text</option>
+    </select>
 </div>
 
 <script>
     document.getElementById("join").addEventListener("click", function (ev) {
         //connect to server and add to room on Join button
         var roomId = document.getElementById("roomId").value;
-//        var connector = new Connector("https://192.168.0.103:3000"); //use for remote testing (need https server!)
+//            var connector = new Connector("https://192.168.0.103:3000"); //use for remote testing (need https server!)
         var connector = new Connector("http://127.0.0.1:3000"); //use for local testing on one machine
         connector.connect(roomId, function (err) {
             if (err) {
@@ -44,14 +60,38 @@
             window.connector = connector;
             document.getElementById("join").remove();
 
-            var ownMediaTag = document.getElementById("myVideo");
-            ownMediaTag.muted = true;
             var remoteMediaTag = document.getElementById("otherVideo");
 
             //create p2p handler and setup it
             _p2p = new p2p(window.connector, remoteMediaTag);
             _p2p.catchStream(function () {
-                _p2p.showVideo(ownMediaTag, _p2p.stream);
+
+                //create video for stream, and pixi app (js/filter.js)
+                var filter = new SFilter(_p2p.stream, {
+                    canvasWidth: 600,
+                    ownStreamContainerId: "videos"
+                });
+
+                //mute sound
+                filter.mute();
+
+                //change original stream to filter from canvas
+                _p2p.stream = filter.filter();
+
+
+                filter.play();
+
+                //show canvas in "videos" container
+                filter.showVideo();
+
+
+                document.getElementById("filterSelect").addEventListener("change", function() {
+                    console.log("on change filter");
+                    if (filter) {
+                        filter.setFilter(this.value);
+                    }
+                });
+
                 document.getElementById("call").disabled = false;
             })
         });
@@ -61,6 +101,8 @@
         //make a call
         _p2p.call();
     }, false);
+
+
 </script>
 </body>
 </html>

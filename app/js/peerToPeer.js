@@ -1,11 +1,10 @@
 class p2p {
-    constructor(connector, ownTag, remoteTag) {
+    constructor(connector, remoteTag) {
         this.peerConnection = null;
         this.stream = null;
         this.isCaller = false;
         this.connector = null;
 
-        this.ownVideo = ownTag;
         this.remoteVideo = remoteTag;
 
         this.connector = connector;
@@ -59,7 +58,6 @@ class p2p {
      */
     _handleStream(stream) {
         this.stream = stream;
-        this._showVideo(this.ownVideo, stream);
     }
 
     /**
@@ -85,7 +83,7 @@ class p2p {
         peerConnection.onaddstream = (ev) => {
             //when remote stream added, shot video
             console.log("add stream");
-            this._showVideo(this.remoteVideo, ev.stream);
+            this.showVideo(this.remoteVideo, ev.stream);
         };
 
         this.peerConnection = peerConnection;
@@ -178,9 +176,8 @@ class p2p {
      * attach stream to video node
      * @param video
      * @param stream
-     * @private
      */
-    _showVideo(video, stream) {
+    showVideo(video, stream) {
         video.srcObject = stream;
         video.play();
     }

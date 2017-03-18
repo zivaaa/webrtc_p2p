@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/mainFilter.js"></script>
+    <script src="js/pixi.min.js"></script>
+    <script src="js/filter.js"></script>
+
+</head>
+<body>
+<div>
+    <button id="play">Show</button>
+    <select id="filterSelect">
+        <option>normal</option>
+        <option>blur</option>
+        <option>color</option>
+        <option>noise</option>
+        <option>text</option>
+    </select>
+</div>
+<!--<canvas id="streamView"></canvas>-->
+<div id="ownScreen"></div>
+<script>
+    var main = new Main();
+    var filter = null;
+
+    document.getElementById("play").addEventListener("click", function() {
+        console.log("play");
+        main.onPlay(function(_filter) {
+            _filter.showVideo();
+            filter = _filter;
+        });
+    });
+
+    document.getElementById("filterSelect").addEventListener("change", function() {
+        console.log("on change filter");
+        if (filter) {
+            filter.setFilter(this.value);
+        }
+    });
+</script>
+</body>
+</html>
